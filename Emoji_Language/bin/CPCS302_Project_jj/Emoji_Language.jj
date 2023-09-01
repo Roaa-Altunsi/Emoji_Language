@@ -1,0 +1,255 @@
+/**
+ * JavaCC template file created by SF JavaCC plugin 1.5.28+ wizard for JavaCC 1.5.0+
+ */options{  static = true;}PARSER_BEGIN(Emoji_Language)package CPCS302_Project_jj;
+
+public class Emoji_Language{  public static void main(String args []) throws ParseException  {
+
+    System.out.println("----- Weclome To Our Emoji Language :] ----- ");
+    System.out.println("");
+    System.out.print("Enter an expression: ");
+    Emoji_Language parser = new Emoji_Language(System.in);
+	  try
+	  {
+	    Emoji_Language.Start();
+	    System.out.println("\ncorrect statement.");
+	    System.out.println("Thank you.");
+	  }
+	  catch (Exception e)
+	  {
+	    System.out.println("\nOops, Incorrect statement.");
+	    System.out.println(e.getMessage());
+	  }
+	  catch(Error e)
+	  {
+	    System.out.println("\nOops, Incorrect statement.");
+	    System.out.println(e.getMessage());
+	  }   }}PARSER_END(Emoji_Language)// ---------------------- TOKENS ------------------------- //
+
+SKIP :
+{
+  " "
+| "\r"
+| "\t"
+| "\n"
+}
+
+TOKEN : /* Arithmetic Operations */
+{
+  < PLUS : ":)" >
+| < MINUS: ":(" >
+| < MULTIPLY: "*_*" >
+| < DIVIDE : ":/" >
+| < REMAINDER: ":|" >
+| < POWER: "^_^" >
+}
+
+TOKEN : /* Assignment Operator */
+{
+ < ASSIGNMENT: "^=^" >
+}
+
+TOKEN: /* Relational Operations */
+{
+  < IS_EQUAL: ";)" >
+| < NOT_EQUAL: ";(" >
+| < GREATER_THAN: ":>" >
+| < GREATER_THAN_OR_EQUAL: ":>=" >
+| < LESS_THAN: ":<" >
+| < LESS_THAN_OR_EQUAL: ":<=" >
+}
+
+TOKEN : /* Logical Operators */
+{
+  < AND: "&_&" >
+| < OR: "o_o" >
+| < NOT: "x_x" >
+}
+
+TOKEN: /* Punctuation Marks */
+ {
+  < OPEN_ROUND_BRACKET: "(-" >
+| < CLOSE_ROUND_BRACKET: "-)" >
+| < OPEN_SQUARE_BRACKET: "[" >
+| < CLOSE_SQUARE_BRACKET: "]" >
+| < OPEN_ANGLE_BRACKET: "<" >
+| < CLOSE_ANGLE_BRACKET: ">" >
+| < END_STATEMENT:"@" >
+| < BAR: "->" >
+}
+
+TOKEN : /* Alphabet */
+{
+  < LETTER: ["a"-"z", "A"-"Z"] >
+| < SYMBOL: "!" | "?" | "$" | "_" >
+}
+
+TOKEN : /* Identifier */
+{
+  < ID: ("._.") ("_" | < LETTER > | < IN >)+ >
+}
+
+TOKEN : /* Data Types */
+{
+  < IN: (["0"-"9"])+ >
+| < FL: (< IN >)* (".") (< IN >)+ >
+| < BO: "true" | "false" >
+}
+
+TOKEN: /* Keywords */
+{ 
+  < CONSTANT: "CONS" >
+| < INCASE: "INCASE" >
+| < SO: "SO" >
+| < ELSE: "ELSE" >
+| < END: "END" >
+| < REPEAT: "REPEAT" >
+| < ARR: "Arr" >
+| < LIST: "List" >
+}
+
+SPECIAL_TOKEN : /* Comments */
+{
+  < SINGLE_LINE_COMMENT: "#_#" (~["\n"])* > { System.out.println("Found a Single Line Comment"); }
+| < MULTI_LINES_COMMENT: "*#_#" (~["*","#","_","*"])* "#_#*" > { System.out.println("Found a Multipl Line Comment"); }
+}
+
+
+// ---------------------- GRAMMARS ------------------------- //
+
+void Start() :
+{ }
+{
+  Stmts ()
+}
+
+void Stmts ():
+{ }
+{
+  Decleration_Stmt() < END_STATEMENT >
+| Array() | List()
+| Iterative_Stmt() | Conditional_Stmt()
+}
+
+void Decleration_Stmt ():
+{ }
+{
+ Constant_Stmt() | Assignment_Stmt()
+}
+
+void Constant_Stmt():
+{ }
+{
+  < CONSTANT > <ID > < ASSIGNMENT > Stmt() { System.out.println("Found a Constant"); }
+}
+
+void Assignment_Stmt():
+{ }
+{
+ < ID > < ASSIGNMENT > Stmt() { System.out.println("Found an Assignment Statement"); }
+}
+
+void Stmt():
+{ }
+{
+  Operand() (Arithmetic_Stmt() | Relational_Stmt())? | Boolean_Stmt()
+}
+
+void Arithmetic_Stmt():
+{ }
+{
+  ( Arithmetic_Operation() Operand() )+ 
+}
+
+void Relational_Stmt():
+{ }
+{
+  ( Relational_Operation() Operand() )+ 
+}
+
+void Boolean_Stmt():
+{ }
+{
+ < BO > ( Logical_Operators() < BO > )+
+} 
+
+void Arithmetic_Operation():
+{ }
+{
+  < PLUS > | < MINUS > | < MULTIPLY > | < DIVIDE > | < REMAINDER > | < POWER >
+}
+
+void Relational_Operation ():
+{ }
+{
+  < IS_EQUAL > | < NOT_EQUAL > | < GREATER_THAN > | < GREATER_THAN_OR_EQUAL >
+   | < LESS_THAN > | < LESS_THAN_OR_EQUAL >
+}
+
+void Logical_Operators ():
+{ }
+{
+  < AND > | < OR > | < NOT >
+} 
+
+void Array() :
+{ }
+{
+ < ARR > < ID > < OPEN_ANGLE_BRACKET > < CLOSE_ANGLE_BRACKET >
+ < ASSIGNMENT > < OPEN_SQUARE_BRACKET >
+ ( Number() | String() ) ( < BAR > ( Number() | String() ) )*
+ < CLOSE_SQUARE_BRACKET > < END_STATEMENT > { System.out.println("Found an Array"); }
+}
+
+void List() :
+{ int count = 0; Token listSize; }
+{
+  < LIST > < ID > < OPEN_ANGLE_BRACKET > listSize = < IN >
+  < CLOSE_ANGLE_BRACKET > < ASSIGNMENT > < OPEN_SQUARE_BRACKET >
+  ( Number() | String() ) { count++; } ( < BAR > ( Number() | String() ) { count++; } )*
+  < CLOSE_SQUARE_BRACKET > < END_STATEMENT >
+  { if (count != Integer.parseInt(listSize.image)) throw new ParseException("The list must be of the specified size!"); }
+}
+
+void Iterative_Stmt():
+{ }
+{
+  < REPEAT >  Condition() < OPEN_ROUND_BRACKET > (Stmts())+ < CLOSE_ROUND_BRACKET >
+}
+
+void Conditional_Stmt():
+{ }
+{
+  < INCASE > Condition() < SO > < OPEN_ROUND_BRACKET >
+  (Stmts())+ < CLOSE_ROUND_BRACKET > (Else_Stmt())? < END >
+}
+
+void Condition():
+{ }
+{
+  < OPEN_SQUARE_BRACKET > Operand() Relational_Stmt() < CLOSE_SQUARE_BRACKET >
+}
+
+void Else_Stmt():
+{ }
+{
+  < ELSE > < OPEN_ROUND_BRACKET > (Stmts())+ < CLOSE_ROUND_BRACKET >
+}
+
+void String():
+{ }
+{
+ (< LETTER > | < SYMBOL >)+
+}
+
+void Number():
+{ }
+{
+  < IN > | < FL >
+}
+
+void Operand():
+{ }
+{
+  Number() | < ID >
+}
+

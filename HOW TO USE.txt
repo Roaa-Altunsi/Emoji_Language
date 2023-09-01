@@ -1,0 +1,20 @@
+HOW TO USE
+
+• Using Eclips:
+
+>> Emoji_Language | jj File
+
+1. Extract the project file "Emoji_Language" from the zip file.
+2. Open the project in the Eclips IDE.
+3. Run Emoji_Language as package.
+
+-----------------------------------------------------------------
+
+>> Emoji_Language | jjt File
+
+1. Extract the project file "Emoji_Language_jjt" from the zip file.
+2. Open the project in the Eclips IDE.
+3. Run Emoji_Language_jjt as package.
+
+
+ENJOY!
